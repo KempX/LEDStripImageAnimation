@@ -4,7 +4,7 @@
 
 #include <FastLED.h>
 #include <avr/pgmspace.h>
-#include "pool.h"
+#include "fire.h"
 
 #define DATA_PIN      2
 #define LED_TYPE      WS2812B
@@ -13,7 +13,7 @@
 #define NUM_FRAMES    40
 #define IMAGE_WIDTH   150
 #define BRIGHTNESS    20     //96
-#define FPS           20     //120
+#define FPS           30     //120
 
 CRGB leds[NUM_LEDS];
 
@@ -30,8 +30,8 @@ void setup() {
 void loop(){
   for(int frame = 0; frame < NUM_FRAMES; frame++){
     for(int i = 0; i < IMAGE_WIDTH; i++){
-        leds[i] = pgm_read_dword(&(pool[(frame * IMAGE_WIDTH) + i]));
-        leds[i + IMAGE_WIDTH] = pgm_read_dword(&(pool[(frame * IMAGE_WIDTH) + i]));
+        leds[i] = pgm_read_dword(&(fire[(frame * IMAGE_WIDTH) + i]));
+        leds[i + IMAGE_WIDTH] = pgm_read_dword(&(fire[(frame * IMAGE_WIDTH) + i]));
     }
     FastLED.show();
     FastLED.delay(1000 / FPS);
