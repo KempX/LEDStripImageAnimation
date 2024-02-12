@@ -3,6 +3,7 @@
 ///          Change settings with LCD keypad shield
 /// @example LEDStripImageAnimation.ino
 
+#include <EEPROM.h>
 #include <FastLED.h>
 #include <LiquidCrystal.h>
 #include <avr/pgmspace.h>
@@ -52,6 +53,10 @@ void setup() {
   lcd.begin(16, 2);
 
   lastTick = millis();
+
+  brightness = EEPROM.read(1);
+  fps = EEPROM.read(2);
+  wide = EEPROM.read(3);
 }
   
 void loop(){
@@ -65,9 +70,9 @@ void loop(){
 
 void showColorValues(){
   if(wide){
-    for(int i = 0; i < NUM_LEDS; i = i + 2){
-        leds[i] = pgm_read_dword(&(fire[(frame * IMAGE_WIDTH) + (i / 2)]));
-        leds[i + 1] = leds[i];
+    for(int i = 0; i < IMAGE_WIDTH; i++){
+        leds[i * 2] = pgm_read_dword(&(fire[(frame * IMAGE_WIDTH) + i]));
+        leds[(i * 2) + 1] = leds[i * 2];
     }
   } else {
     for(int i = 0; i < IMAGE_WIDTH; i++){
@@ -169,7 +174,14 @@ void processInputs(){
         break;
       }
     }
+    updateEEPROM();
     lastCommand = command;
   }  
   lastButtonValue = buttonValue;
+}
+
+void updateEEPROM(){
+  EEPROM.update(1, brightness);
+  EEPROM.update(2, fps);
+  EEPROM.update(3, wide);
 }
